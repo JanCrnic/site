@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Instrukcije Velika Gorica • Matematika, Fizika, Kemija</title>
 
+ 
   <!-- Google Fonts: Plus Jakarta Sans (Moderan, čist font) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -389,7 +390,7 @@
       <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">Ispunite kratki obrazac ispod. Podaci služe isključivo za organizaciju instrukcija.</p>
 
       <!-- Ako želiš da forma šalje mailove, registriraj se na formspree.io i stavi link u action="..." -->
-      <form action="https://formspree.io/f/ovdje_stavi_svoj_id" method="POST">
+      <form action="https://formspree.io/f/xgoqrzbw" method="POST">
 
         <div class="form-group">
           <label for="ime">Ime i prezime učenika</label>
@@ -420,23 +421,29 @@
               <option>Matematika</option>
               <option>Fizika</option>
               <option>Kemija</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="adresa">Kućna adresa</label>
-          <textarea id="adresa" name="adresa" rows="3" placeholder="Ulica, kućni broj i mjesto (mora biti unutar plave zone)" required></textarea>
-        </div>
-
-        <button type="submit">Pošalji zahtjev za instrukcije</button>
-
-</form>
+</select>
 </div>
 
+<div class="form-group">
+<label>Kućna adresa</label>
+<textarea
+name="adresa"
+rows="3"
+required></textarea>
+</div>
+
+<button type="submit">
+Pošalji zahtjev za instrukcije
+</button>
+
+</form>
+
+<p id="status"></p>
+
+</div>
 <!-- PRIVATNI RASPORED -->
 
-<<div class="section-card" id="raspored" style="display:none">>
+<div class="section-card" id="raspored" style="display:none">
 
 <h2>Moj raspored instrukcija</h2>
 
@@ -501,6 +508,28 @@ Admin raspored
       radius: 10000          
     }).addTo(map);
   </script>
+
+  this.reset();
+
+}else{
+
+document.getElementById("status")
+.innerText="❌ Greška pri slanju.";
+
+}
+
+}catch(error){
+
+document.getElementById("status")
+.innerText="❌ Problem s povezivanjem.";
+
+console.error(error);
+
+}
+
+});
+
+</script>
 
 </body>
 </html>
