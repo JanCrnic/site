@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instrukcije Velika Gorica • Matematika, Fizika, Kemija</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans (Moderan, čist font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS za kartu -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <style>
+    :root {
+      --primary: #1e3a8a;       /* Elegantna tamnoplava */
+      --primary-light: #3b82f6; /* Svijetlija plava za akcente */
+      --text-main: #1e293b;     /* Skoro crna za tekst */
+      --text-muted: #64748b;    /* Siva za manje važne opise */
+      --bg-body: #f8fafc;       /* Ultra svijetla siva podloga */
+      --card-bg: #ffffff;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    /* Profesionalni Header */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #93c5fd;
+      font-weight: 500;
+    }
+
+    .badge-container {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Glavni kontejner organiziran u sekcije */
+    .container {
+      max-width: 800px;
+      margin: -30px auto 60px auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      padding: 35px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+      margin-bottom: 30px;
+      border: 1px solid #f1f5f9;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #0f172a;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Grid za ključne informacije s ikonama */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+
+    .info-item {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-light);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-item .label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .info-item .value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Karta */
+    #map {
+      height: 350px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* FAQ Sekcija */
+    .faq-item {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .faq-question {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    .faq-answer {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Recenzije / Socijalni Dokaz */
+    .review-box {
+      background: #fdfdfd;
+      border: 1px italic #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .review-text {
+      font-style: italic;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .review-author {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-light);
+    }
+
+    /* Modernizirana Forma */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input, select, textarea {
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: var(--text-main);
+      background-color: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+      background-color: #fff;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    }
+
+    button:hover {
+      box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border-top: 1px solid #e2e8f0;
+      background: #f1f5f9;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      .section-card { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Instrukcije iz matematike, fizike i kemije</h1>
+    <p>Privatne instrukcije koje garantiraju uspjeh  </p>
+    <div class="badge-container">
+      <span class="badge">Srednja škola</span>
+      <span class="badge">Pripreme za Državnu maturu</span>
+      <span class="badge">Individualne instrukcije</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- SEKCIJA: INFORMACIJE -->
+    <div class="section-card">
+      <h2>Pregled usluge</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Cijena</span>
+          <span class="value">10 € / 60 min</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Lokacija</span>
+          <span class="value">Na vašoj kućnoj adresi</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Radijus</span>
+          <span class="value">Do 10 km</span>
+        </div>
+      </div>
+      
+      <div style="margin-top: 25px;">
+        <label>Područje pokrivenosti (10 km oko Superkonzuma VG):</label>
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <!-- SEKCIJA: RECENZIJE (Social Proof) -->
+    <div class="section-card">
+      <h2>Što kažu roditelji i učenici</h2>
+      <div class="review-box">
+        <p class="review-text">"Zahvaljujući instrukcijama Marko ispravio jedinicu iz fizike i izvukao solidnu četvorku."</p>
+        <p class="review-author">— Mama Lucija, Velika Gorica</p>
+      </div>
+      <div class="review-box">
+        <p class="review-text">"Odlične pripreme za maturu iz matematike. "</p>
+        <p class="review-author">— Filip, 4. razred gimnazije</p>
+      </div>
+    </div>
+
+    <!-- SEKCIJA: FAQ -->
+    <div class="section-card">
+      <h2>Često postavljana pitanja (FAQ)</h2>
+      
+      <div class="faq-item">
+        <p class="faq-question">Kako se dogovaraju termini instrukcija?</p>
+        <p class="faq-answer">Nakon što ispunite prijavu na dnu stranice, povratno Vas kontaktiram telefonski ili putem WhatsAppa u roku od nekoliko sati kako bismo uskladili slobodne termine.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-question">Što ako moramo otkazati dogovoreni termin?</p>
+        <p class="faq-answer">Potpuno razumijem školske i izvanškolske obveze. Otkazivanje ili promjena termina je besplatna, jedino Vas molim da javite barem 2-3 sata ranije kako bih mogla reorganizirati raspored.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-question">Radimo li po školskoj zbirci ili donosite svoje materijale?</p>
+        <p class="faq-answer">Primarno radimo po knjizi i zbirci zadataka koju učenik koristi u  školi kako bismo pratili aktualni plan. Po potrebi, osiguravam dodatne primjere  za vježbu.</p>
+      </div>
+
+      <div class="faq-item">
+        <p class="faq-question">Pokriva li radijus od 10 km mjesta oko Velike Gorice?</p>
+        <p class="faq-answer">Da! Plavi krug na karti jasno prikazuje gdje su instrukcije dostupne. To uključuje lokacije kao što su Novo Čiče, Pleso, Vukovina.</p>
+      </div>
+    </div>
+
+    <!-- SEKCIJA: KONTAKT -->
+<div class="section-card">
+  <h2>Kontakt</h2>
+
+  <div class="info-grid">
+
+    <div class="info-item">
+      <span class="label">Telefon</span>
+      <span class="value">
+        <a href="tel:+385911719239"
+           style="text-decoration:none; color:inherit;">
+          +385 91 171 9239
+        </a>
+      </span>
+    </div>
+
+    <div class="info-item">
+      <span class="label">E-mail</span>
+      <span class="value">
+        <a href="mailto:irenainstrukcijevg@gmail.com"
+           style="text-decoration:none; color:inherit;">
+          irenainstrukcijevg@gmail.com
+        </a>
+      </span>
+    </div>
+
+  </div>
+
+  <p style="margin-top:20px; color:var(--text-muted);">
+    Slobodno nazovite ili pošaljite poruku putem WhatsAppa za dogovor termina.
+  </p>
+
+  <a href="https://wa.me/385911719239"
+     target="_blank"
+     style="text-decoration:none;">
+      <button type="button">
+        Pošalji WhatsApp poruku
+      </button>
+  </a>
+
+</div>
+
+    <!-- SEKCIJA: FORMA -->
+    <div class="section-card">
+      <h2>Rezervirajte svoj termin</h2>
+      <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">Ispunite kratki obrazac ispod. Podaci služe isključivo za organizaciju instrukcija.</p>
+
+      <!-- Ako želiš da forma šalje mailove, registriraj se na formspree.io i stavi link u action="..." -->
+      <form action="https://formspree.io/f/ovdje_stavi_svoj_id" method="POST">
+
+        <div class="form-group">
+          <label for="ime">Ime i prezime učenika</label>
+          <input type="text" id="ime" name="ime" placeholder="npr. Ivan Horvat" required>
+        </div>
+
+        <div class="form-group">
+          <label for="skola">Naziv srednje škole</label>
+          <input type="text" id="skola" name="skola" placeholder="npr. Gimnazija Velika Gorica" required>
+        </div>
+
+        <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label for="razred">Razred</label>
+            <select id="razred" name="razred" required>
+              <option value="">Odaberi</option>
+              <option>1. razred</option>
+              <option>2. razred</option>
+              <option>3. razred</option>
+              <option>4. razred</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="predmet">Predmet</label>
+            <select id="predmet" name="predmet" required>
+              <option value="">Odaberi</option>
+              <option>Matematika</option>
+              <option>Fizika</option>
+              <option>Kemija</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adresa">Kućna adresa</label>
+          <textarea id="adresa" name="adresa" rows="3" placeholder="Ulica, kućni broj i mjesto (mora biti unutar plave zone)" required></textarea>
+        </div>
+
+        <button type="submit">Pošalji zahtjev za instrukcije</button>
+
+</form>
+</div>
+
+<!-- PRIVATNI RASPORED -->
+
+<<div class="section-card" id="raspored" style="display:none">>
+
+<h2>Moj raspored instrukcija</h2>
+
+<p style="color:#64748b; margin-bottom:20px;">
+Privatni raspored termina
+</p>
+
+<iframe
+src="https://calendar.google.com/calendar/embed?src=fdcc15e178fec43f0f0f8ec0bd68d04dbc7eb0e769150e25d78c02640fd94986%40group.calendar.google.com&ctz=Europe%2FBelgrade" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe> style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>"
+style="border:0;width:100%;height:700px;border-radius:12px;"
+frameborder="0"
+scrolling="no">
+</iframe>
+
+</div>
+
+<script>
+function otvoriRaspored(){
+
+const lozinka = prompt("Unesite admin lozinku:");
+
+if(lozinka==="jancrnicDea"){
+document.getElementById("raspored").style.display="block";
+}else{
+alert("Pogrešna lozinka");
+}
+
+}
+</script>
+
+</div>
+
+<button type="button" onclick="otvoriRaspored()">
+Admin raspored
+</button>
+
+<footer style="text-align:center;padding:30px">
+© 2026 Irena Crnić • Instrukcije Velika Gorica
+</footer>
+
+  <!-- Leaflet JS za funkcionalnu kartu -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    // Koordinate za Superkonzum Velika Gorica
+    const lat = 45.7115;
+    const lon = 16.0589;
+
+    const map = L.map('map', { scrollWheelZoom: false }).setView([lat, lon], 11);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const marker = L.marker([lat, lon]).addTo(map);
+    marker.bindPopup("<b>Superkonzum Velika Gorica</b><br>Polazište za dolazak na adresu.").openPopup();
+
+    // Radijus podignut na 10000 metara (10km)
+    const circle = L.circle([lat, lon], {
+      color: '#3b82f6',      
+      fillColor: '#3b82f6',  
+      fillOpacity: 0.1,     
+      radius: 10000          
+    }).addTo(map);
+  </script>
+
+</body>
+</html>
